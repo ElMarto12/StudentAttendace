@@ -1,0 +1,31 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Prisijungimas</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/StudentAttendace.styles.css" asp-append-version="true"/>
+</head>
+<body>
+<form method="post" class="border border-3 rounded-3 position-absolute top-50 start-50 translate-middle px-0 col-md-6 col-sm-4" asp-controller="Login" asp-action="Login">
+    <div class="row mt-5 mb-3 px-5">
+        <label for="email" class="form-label px-0">El.Pastas</label>
+        <input type="email" name="email" class="form-control align-content-center" id="email" aria-label="Email"/>
+    </div>
+    <div class="row mb-4 px-5">
+        <label for="password" class="form-label px-0">Slaptazodis</label>
+        <input type="password" name="password" class="form-control" id="password" aria-label="Password"/>
+    </div>
+    <div class="row mb-5 px-5">
+        <div class="col px-0">
+            <button type="submit" class="btn btn-dark col-md-12 col-sm-12">Prisijungti</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>

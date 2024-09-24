@@ -20,7 +20,4 @@ public class User
     [Column(TypeName = "varchar(255)")]
     public string Password { get; set; }
     
-    [Required]
-    [Column(TypeName = "varchar(65)")]
-    public string Role { get; set; }
 }
