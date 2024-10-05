@@ -15,7 +15,7 @@ public class Group
     
     [Required]
     [Column(TypeName = "int")]
-    public int LectureAmount { get; set; }
+    public int StudentAmount { get; set; }
     
     public List<TeachersGroup> TeachersGroups { get; set; } = new List<TeachersGroup>();
     public List<Student> Students { get; set; } = new List<Student>();

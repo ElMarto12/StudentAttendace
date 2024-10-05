@@ -1,20 +1,24 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using StudentAttendace.Models;
+using StudentAttendace.Services;
 
 namespace StudentAttendace.Controllers;
 
-public class HomeController : Controller
+public class HomeController(ILogger<HomeController> logger, TeacherService service) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<HomeController> _logger = logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index()
     {
-        _logger = logger;
-    }
-
-    public IActionResult Index()
-    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId != null)
+        {
+            var teacher = await service.GetTeacherByUserIdAsync(userId);
+            ViewData["TeacherName"] = $"{teacher.Name} {teacher.LastName}";
+        }
+        
         return View();
     }
 

@@ -51,5 +51,11 @@ public class LoginController(ILogger<LoginController> logger, ApplicationDbConte
         ModelState.AddModelError(string.Empty, "Invalid Credentials");
         return View();
     }
-    
+
+    [HttpPost]
+    public async Task<IActionResult> LogOut()
+    {
+        await HttpContext.SignOutAsync();
+        return RedirectToAction("Login","Login");
+    }
 }
