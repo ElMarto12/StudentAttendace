@@ -13,9 +13,11 @@ public class Lecture
     [Column(TypeName = "date")]
     public DateTime LectureDate { get; set; }
     
-    [Required]
     [Column(TypeName = "decimal(5,2)")]
     public decimal AttendancePercentage { get; set; }
+    
+    [Column(TypeName = "tinyint(1)")]
+    public bool IsAttended { get; set; }
 
     public List<StudentsLecture> StudentsLectures { get; set; } = new List<StudentsLecture>();
     
