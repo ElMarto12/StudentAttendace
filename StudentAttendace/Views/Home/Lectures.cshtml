@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Paskaitos";
+}
+@{
+    for (int l = 0; l <= 1; l++)
+    {
+        <div class="container-fluid mt-5 border border-dark rounded-2">
+            <div class="row border-dark bg-light rounded-top border-bottom">
+                <p class="mt-2">Dalykas</p>
+            </div>
+            <div class="container-fluid mt-3 mb-3">
+                @{
+                    for (int i = 0; i <= 4; i++)
+                    {
+                        <div class="row border mt-2 border-dark rounded">
+                            <div class="col d-flex justify-content-between align-content-center py-2">
+                                <p>2024-10-15</p>
+                                <button class="btn-info bg-primary rounded text-light border-0 px-4">Atidaryti</button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+}
