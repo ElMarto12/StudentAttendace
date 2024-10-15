@@ -9,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException()));
+builder.Services.AddHttpClient<GroupService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5208");
+});
 builder.Services.AddHttpClient<TeacherService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5208");
@@ -24,7 +28,6 @@ builder.Services.AddAuthentication(options =>
         options.LoginPath = "/Login/Login";
     });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,9 +40,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
