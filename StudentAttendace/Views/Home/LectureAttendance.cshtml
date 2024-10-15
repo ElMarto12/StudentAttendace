@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Paskaita";
+}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col d-flex justify-content-between align-content-center">
+            <p>Paskaita</p>
+            <p>2024-10-21</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex justify-content-between align-content-center mt-5">
+            <p>12:15</p>
+            <button class="btn-danger bg-warning rounded border-0">Generuoti QR</button>
+        </div>
+    </div>
+    <div class="mt-5 border border-dark rounded">
+        <div class="d-flex bg-light rounded-top border-bottom border-dark">
+            <p class="flex-grow-1">Vardas Pavardė</p>
+            <p class="mx-5">Dalyvavimas</p>
+        </div>
+        @{
+            for (int i = 0; i <= 10; i++)
+            {
+                <div class="d-flex border-bottom border-dark">
+                    <div class="flex-grow-1">
+                        <p>Martynas Danys</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-content-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="YesRadio" id="Yes">
+                            <label class="form-check-label" for="Yes">Yra</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="NoRadio" id="No">
+                            <label class="form-check-label" for="No">Nėra</label>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
