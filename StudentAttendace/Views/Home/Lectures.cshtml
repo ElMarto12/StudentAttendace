@@ -15,7 +15,9 @@
                         <div class="row border mt-2 border-dark rounded">
                             <div class="col d-flex justify-content-between align-content-center py-2">
                                 <p>2024-10-15</p>
-                                <button class="btn-info bg-primary rounded text-light border-0 px-4">Atidaryti</button>
+                                <form method="post" asp-controller="Home" asp-action="LectureAttendance">
+                                    <button type="submit" class="btn-info bg-primary rounded text-light border-0 px-4 py-1 mt-1">Atidaryti</button>
+                                </form>
                             </div>
                         </div>
                     }
