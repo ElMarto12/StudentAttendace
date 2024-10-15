@@ -1,10 +1,11 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using StudentAttendace.Models.DbModels;
 using StudentAttendace.Services;
 
 namespace StudentAttendace.Components;
 
-public class TeacherInfoView(TeacherService service) : ViewComponent
+public class TeacherInfoView(TeacherService teacherService) : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {
@@ -14,7 +15,7 @@ public class TeacherInfoView(TeacherService service) : ViewComponent
             return Content("User not authenticated");
         }
 
-        var teacher = await service.GetTeacherByUserIdAsync(userId);
+        var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
         return View(teacher);
     }
 }
