@@ -9,36 +9,37 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
 <body>
-<main class="d-flex flex-nowrap">
-    <div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary sidebar">
+<main class="d-flex flex-nowrap custom-bg-white">
+    <div class="d-flex flex-column flex-shrink-0 p-3 custom-bg-green sidebar">
         <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
             <span class="fs-4">Lankomumas</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active text-light" : "")"
+                <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-button text-light" : "")"
                    asp-controller="Home" asp-action="Index">
                     <i class="bi bi-house me-2"></i>
                     Pagrindinis
                 </a>
             </li>
             <li>
-                <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Lectures" ? "active text-light" : "")"
+                <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Lectures" ? "active-button text-light" : "")"
                    asp-controller="Home" asp-action="Lectures">
                     <i class="bi bi-book me-2"></i>
                     Paskaitos
                 </a>
             </li>
             <li>
-                <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Groups" ? "active text-light" : "")"
+                <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Groups" ? "active-button text-light" : "")"
                    asp-controller="Home" asp-action="Groups">
                     <i class="bi bi-person me-2"></i>
                     Grupės
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link link-body-emphasis">
+                <a class="nav-link link-body-emphasis  @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Subjects" ? "active-button text-light" : "")"
+                   asp-controller="Home" asp-action="Subjects">
                     <i class="bi bi-folder me-2"></i>
                     Dėstomi dalykai
                 </a>

@@ -28,4 +28,20 @@ public class SubjectsController(ApplicationDbContext context) : ControllerBase
 
         return subject;
     }
+
+    [HttpGet]
+    [Route("ByTeacher/{teacherId}")]
+    public async Task<ActionResult<IEnumerable<Subject>>> GetSubjectsByTeacherId(int teacherId)
+    {
+        var subjects = await context.Subjects
+            .Where(ts => ts.TeacherId == teacherId)
+            .ToListAsync();
+
+        if (subjects.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(subjects);
+    }
 }

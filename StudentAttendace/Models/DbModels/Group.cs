@@ -17,6 +17,7 @@ public class Group
     [Column(TypeName = "int")]
     public int StudentAmount { get; set; }
     
+    public List<Lecture> Lectures { get; set; } = new List<Lecture>();
     public List<TeachersGroup> TeachersGroups { get; set; } = new List<TeachersGroup>();
     public List<Student> Students { get; set; } = new List<Student>();
     public List<GroupsSubject> GroupsSubjects { get; set; } = new List<GroupsSubject>();

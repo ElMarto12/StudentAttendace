@@ -1,12 +1,14 @@
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using QRCoder;
 using StudentAttendace.Models;
+using StudentAttendace.Models.DbModels;
 using StudentAttendace.Services;
 
 namespace StudentAttendace.Controllers;
 
-public class HomeController(ILogger<HomeController> logger, TeacherService teacherService, GroupService groupService) : Controller
+public class HomeController(ILogger<HomeController> logger, TeacherService teacherService, GroupService groupService, SubjectService subjectService, LectureService lectureService, StudentService studentService) : Controller
 {
     private readonly ILogger<HomeController> _logger = logger;
 
@@ -22,8 +24,23 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
         return View();
     }
 
-    public IActionResult Lectures()
+    public async Task<IActionResult> Lectures()
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId != null)
+        {
+            var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
+            var subjects = await subjectService.GetSubjectsByTeacherIdAsync(teacher.TeacherID.ToString());
+            var lectures = await lectureService.GetLecturesBySubjectIdAsync(subjects);
+            var groups = await groupService.GetGroupsAsync();
+            
+            ViewBag.Subject = subjects;
+            ViewBag.Lecture = lectures;
+            ViewBag.Group = groups;
+            
+            return View();
+        }
+
         return View();
     }
 
@@ -35,14 +52,74 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
             var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
             var groups = await groupService.GetGroupsByTeacherIdAsync(teacher.TeacherID.ToString());
 
+            List<Student> students = new List<Student>();
+
+            foreach (var g in groups)
+            {
+                students.AddRange(await studentService.GetStudentsByGroupIdAsync(g.GroupID.ToString()));
+            }
+
+            ViewBag.Student = students;
+            
             return View(groups);
         }
         
         return View();
     }
     
-    public IActionResult LectureAttendance()
+    public async Task<IActionResult> LectureAttendance(Lecture lecture)
     {
+        IEnumerable<Student> students = await studentService.GetStudentsAsync();
+
+        ViewBag.Student = students;
+        
+        return View(lecture);
+    }
+
+    public async Task<IActionResult> Attendances(Student student)
+    {
+        IEnumerable<Subject> subjects = await subjectService.GetSubjectsAsync();
+        IEnumerable<SubjectAttendance> subjectAttendances = await subjectService.GetSubjectAttendancesAsync();
+        
+        ViewBag.Subject = subjects;
+        ViewBag.SubjectAttendance = subjectAttendances;
+        
+        return View(student);
+    }
+
+    public async Task<IActionResult> Subjects()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId != null)
+        {
+            var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
+            var subjects = await subjectService.GetSubjectsByTeacherIdAsync(teacher.TeacherID.ToString());
+
+            return View(subjects);
+        }
+
+        return View();
+    }
+    
+    public IActionResult GenerateQrCode(int lectureId)
+    {
+        var url = Url.Action("StudentQrLogin", "Home", new { lectureId = lectureId }, Request.Scheme);
+
+        using (var qrGenerator = new QRCodeGenerator())
+        using (var qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q))
+        using (var qrCode = new PngByteQRCode(qrCodeData))
+        {
+            var qrCodeImage = qrCode.GetGraphic(20);
+            
+            return File(qrCodeImage, "image/png");
+        }
+    }
+
+    public IActionResult StudentQrLogin(int lectureId)
+    {
+        ViewBag.LectureId = lectureId;
+        
         return View();
     }
 

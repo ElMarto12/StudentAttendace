@@ -21,6 +21,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public required DbSet<Subject> Subjects { get; set; }
     
+    
     public required DbSet<SubjectAttendance> SubjectAttendances { get; set; }
     
     public required DbSet<TeachersGroup> TeachersGroups { get; set; }

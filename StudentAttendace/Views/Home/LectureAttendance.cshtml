@@ -1,43 +1,86 @@
-﻿@{
+﻿@using StudentAttendace.Models.DbModels
+@model StudentAttendace.Models.DbModels.Lecture 
+
+@{
     ViewData["Title"] = "Paskaita";
 }
-<div class="container-fluid mt-5">
-    <div class="row">
-        <div class="col d-flex justify-content-between align-content-center">
-            <p>Paskaita</p>
-            <p>2024-10-21</p>
+
+<form method="post" asp-controller="Lectures" asp-action="SaveAttendance">
+    <div class="container-fluid mt-5">
+        <input type="hidden" name="lectureId" value="@Model.LectureId" />
+        <div class="row">
+            <div class="col d-flex justify-content-between align-content-center">
+                <h1>Paskaita</h1>
+                <h1 id="lectureTime">@Model.LectureDate</h1>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col d-flex justify-content-between align-content-center mt-5">
-            <p>12:15</p>
-            <button class="btn-danger bg-warning rounded border-0">Generuoti QR</button>
+        <div class="row">
+            <div class="col d-flex mt-5">
+                <p id="countdownTimer" class="flex-grow-1">12:15</p>
+                <button type="button" id="startButton" class="btn-info custom-bg-green rounded border-0 px-3" onclick="toggleLecture()">Pradėti</button>
+                <button type="submit" class="btn-info custom-bg-green rounded border-0 mx-3 px-3">Išsaugoti</button>
+                <button type="button" class="btn-info custom-bg-drkgreen rounded border-0 px-3 text-light" onclick="openQrCode(@Model.LectureId)">Generuoti QR</button>
+            </div>
         </div>
-    </div>
-    <div class="mt-5 border border-dark rounded">
-        <div class="d-flex bg-light rounded-top border-bottom border-dark">
-            <p class="flex-grow-1">Vardas Pavardė</p>
-            <p class="mx-5">Dalyvavimas</p>
-        </div>
-        @{
-            for (int i = 0; i <= 10; i++)
-            {
-                <div class="d-flex border-bottom border-dark">
-                    <div class="flex-grow-1">
-                        <p>Martynas Danys</p>
-                    </div>
-                    <div class="d-flex justify-content-between align-content-center">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="YesRadio" id="Yes">
-                            <label class="form-check-label" for="Yes">Yra</label>
+        <div class="mt-5">
+            <div class="d-flex custom-bg-green justify-content-start align-items-center rounded mb-4">
+                <p class="flex-grow-1 fw-bold mt-2 mb-2 px-3">Vardas Pavardė</p>
+                <p class="fw-bold mt-2 mb-2" style="margin-right: 16%">Dalyvavimas</p>
+            </div>
+            @{
+                var students = ViewBag.Student as IEnumerable<Student>;
+                var filteredStudents = students?.Where(st => st.GroupId == @Model.GroupId);
+
+                foreach (var st in filteredStudents!)
+                {
+                    <div class="d-flex bg-light mb-2 rounded p-1">
+                        <div class="flex-grow-1">
+                            <p class="px-3 mt-2 mb-2">@st.Name @st.LastName</p>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="NoRadio" id="No">
-                            <label class="form-check-label" for="No">Nėra</label>
+                        <div class="d-flex justify-content-between align-content-center">
+                            <div class="form-check mb-2 mt-2">
+                                <input class="form-check-input attendance-radio" type="radio" name="attendance[@st.StudentID]" id="Yes_@st.StudentID" value="true">
+                                <label class="form-check-label" for="Yes_@st.StudentID">Dalyvauja</label>
+                            </div>
+                            <div class="form-check mb-2 mt-2 mx-5">
+                                <input class="form-check-input attendance-radio" type="radio" name="attendance[@st.StudentID]" id="No_@st.StudentID" value="false">
+                                <label class="form-check-label" for="No_@st.StudentID">Nedalyvauja</label>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             }
-        }
+        </div>
     </div>
-</div>
+</form>
+<script>
+    function openQrCode(lectureId) {
+        window.open(`/Home/GenerateQrCode?lectureId=${lectureId}`, '_blank');
+    }
+</script>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script>
+    const lectureId = @Model.LectureId;
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/attendanceHub")
+        .build();
+    
+    connection.start().then(function() {
+        connection.invoke("JoinLectureGroup", lectureId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+   
+    connection.on("ReceiveAttendanceUpdate", function (studentId) {
+        const radioButton = document.getElementById(`Yes_${studentId}`);
+        if (radioButton) {
+            radioButton.checked = true;
+        }
+    });
+</script>
+
+}

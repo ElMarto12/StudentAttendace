@@ -7,12 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
+      <PackageReference Include="QRCoder" Version="1.6.0" />
+      <PackageReference Include="SkiaSharp" Version="2.88.9" />
+      <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
     </ItemGroup>
 
 </Project>

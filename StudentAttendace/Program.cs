@@ -1,25 +1,54 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using StudentAttendace.Config;
+using StudentAttendace.Hubs;
 using StudentAttendace.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.WebHost.UseUrls("http://0.0.0.0:5208");
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException()));
-builder.Services.AddHttpClient<GroupService>(client =>
+
+builder.Services.AddHttpClient("ApiClient", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5208");
-});
-builder.Services.AddHttpClient<TeacherService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5208");
+    client.BaseAddress = new Uri("http://192.168.1.150:5208");
 });
 
-builder.Services.AddAuthentication(options =>
-    {
+
+builder.Services.AddScoped<StudentService>(sp =>
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new StudentService(httpClientFactory.CreateClient("ApiClient"));
+});
+
+builder.Services.AddScoped<TeacherService>(sp =>
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new TeacherService(httpClientFactory.CreateClient("ApiClient"));
+});
+
+builder.Services.AddScoped<GroupService>(sp =>
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new GroupService(httpClientFactory.CreateClient("ApiClient"));
+});
+
+builder.Services.AddScoped<SubjectService>(sp =>
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new SubjectService(httpClientFactory.CreateClient("ApiClient"));
+});
+
+builder.Services.AddScoped<LectureService>(sp =>
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new LectureService(httpClientFactory.CreateClient("ApiClient"));
+});
+
+builder.Services.AddAuthentication(options => {
         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
     })
@@ -27,6 +56,10 @@ builder.Services.AddAuthentication(options =>
     {
         options.LoginPath = "/Login/Login";
     });
+
+builder.Services.AddSignalR();
+
+
 
 var app = builder.Build();
 
@@ -38,6 +71,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapHub<AttendanceHub>("/attendanceHub");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

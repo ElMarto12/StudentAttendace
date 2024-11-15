@@ -17,6 +17,13 @@ public class Student
     [Column(TypeName = "varchar(255)")]
     public string LastName { get; set; }
     
+    [Required]
+    [Column(TypeName = "varchar(255)")]
+    public string Email { get; set; }
+    
+    [Required]
+    [Column(TypeName = "varchar(255)")]
+    public string Password { get; set; }
     public int GroupId { get; set; } // foreign key - Group
     public Group Group { get; } = null!;
 

@@ -1,0 +1,38 @@
+﻿@using StudentAttendace.Models.DbModels
+@model Student
+
+@{
+ViewData["Title"] = "Dalyko lankomumas";
+}
+<div class="container-fluid">
+    <div class="row mt-5">
+        <h2>@Model.Name @Model.LastName</h2>
+    </div>
+    @{
+    var subjectAttendances = ViewBag.SubjectAttendance as IEnumerable<SubjectAttendance>;
+    var filteredSubjectAttendances = subjectAttendances?.Where(sa => sa.StudentId == @Model.StudentID);
+
+    var subjects = ViewBag.Subject as IEnumerable<Subject>;
+    }
+
+    <div class="mt-5">
+        <div class="d-flex custom-bg-green justify-content-start align-items-center rounded mb-4">
+            <p class="flex-grow-1 fw-bold mt-2 mb-2 px-3">Dalykas</p>
+            <p class="fw-bold mt-2 mb-2" style="margin-right: 16%">Procentai</p>
+        </div>
+    </div>
+
+    @foreach (var fsa in filteredSubjectAttendances!)
+    {
+    var subject = subjects?.FirstOrDefault(sub => sub.SubjectId == fsa.SubjectId);
+
+    <div class="d-flex bg-light mb-2 rounded p-1">
+        <div class="flex-grow-1">
+            <p class="px-3 mt-2 mb-2">@subject?.SubjectName</p>
+        </div>
+        <div class="d-flex justify-content-between align-content-center">
+            <p class="px-3 mt-2 mb-2">@fsa.AttendancePercentage %</p>
+        </div>
+    </div>
+    }
+</div>

@@ -11,11 +11,11 @@ public class Teacher
     
     [Required]
     [Column(TypeName = "varchar(255)")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [Required]
     [Column(TypeName = "varchar(255)")]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
 
     public List<Subject> Subjects { get; } = new List<Subject>(); 
 

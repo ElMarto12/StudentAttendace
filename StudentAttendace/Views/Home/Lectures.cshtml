@@ -2,24 +2,42 @@
     ViewData["Title"] = "Paskaitos";
 }
 @{
-    for (int l = 0; l <= 1; l++)
+    foreach(var subject in ViewBag.Subject)
     {
-        <div class="container-fluid mt-5 border border-dark rounded-2">
-            <div class="row border-dark bg-light rounded-top border-bottom">
-                <p class="mt-2">Dalykas</p>
+        <div class="container-fluid mt-5 border-bottom border-light bg-light rounded-2">
+            <div class="row custom-bg-green rounded-top">
+                <p class="mt-2">@subject.SubjectName</p>
             </div>
-            <div class="container-fluid mt-3 mb-3">
+            <div class="container-fluid mt-3 mb-3 bg-light">
                 @{
-                    for (int i = 0; i <= 4; i++)
+                    var lectures = ViewBag.Lecture as IEnumerable<StudentAttendace.Models.DbModels.Lecture>;
+                    var groups = ViewBag.Group as IEnumerable<StudentAttendace.Models.DbModels.Group>;
+
+                    var filteredLectures = lectures?.Where(l => l.SubjectId == subject.SubjectId);
+
+                    if(filteredLectures != null && filteredLectures.Any())
                     {
-                        <div class="row border mt-2 border-dark rounded">
-                            <div class="col d-flex justify-content-between align-content-center py-2">
-                                <p>2024-10-15</p>
-                                <form method="post" asp-controller="Home" asp-action="LectureAttendance">
-                                    <button type="submit" class="btn-info bg-primary rounded text-light border-0 px-4 py-1 mt-1">Atidaryti</button>
-                                </form>
-                            </div>
-                        </div>
+                        foreach(var lecture in filteredLectures)
+                        {
+                            var filteredGroups = groups?.Where(g => g.GroupID == lecture.GroupId);
+
+                            foreach (var group in filteredGroups)
+                            {
+                                <div class="row border mt-2 border-light custom-bg-white rounded">
+                                    <div class="col d-flex justify-content-between align-content-center py-2">
+                                        <div class="col d-flex flex-grow-1">
+                                            <p>@lecture.LectureDate</p>
+                                            <p class="mx-3">@group.GroupName</p>
+                                        </div>
+                                        <a href="@Url.Action("GetLectureById", "Lectures", new {id = @lecture.LectureId})" class="btn-info custom-bg-drkgreen rounded text-light text-decoration-none border-0 px-4 py-1 mt-1">Atidaryti</a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nėra paskaitų.</p>
                     }
                 }
             </div>

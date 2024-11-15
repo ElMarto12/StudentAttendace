@@ -1,0 +1,18 @@
+﻿@model IEnumerable<StudentAttendace.Models.DbModels.Subject>
+
+@{
+    ViewData["Title"] = "Dalykai";
+}
+
+
+<div class="container-fluid mt-5 custom-bg-green">
+    <div class="col custom-bg-green">
+        @foreach (var sub in Model)
+        {
+            <div class="row custom-bg-white birk">
+                <p>@sub.SubjectName</p>
+            </div>
+        }
+    </div>
+</div>
+
