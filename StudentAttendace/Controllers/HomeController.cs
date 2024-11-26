@@ -67,6 +67,30 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
         return View();
     }
     
+    public async Task<IActionResult> Archives()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId != null)
+        {
+            var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
+            var subjects = await subjectService.GetSubjectsByTeacherIdAsync(teacher.TeacherID.ToString());
+
+            List<Lecture> lectures = new List<Lecture>();
+
+            foreach (var s in subjects)
+            {
+                lectures.AddRange(await lectureService.GetLecturesWhichAreAttended(s.SubjectId.ToString()));
+            }
+
+            ViewBag.Lecture = lectures;
+            
+            return View(subjects);
+        }
+
+        return View();
+    }
+    
     public async Task<IActionResult> LectureAttendance(Lecture lecture)
     {
         IEnumerable<Student> students = await studentService.GetStudentsAsync();
@@ -90,21 +114,6 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
         ViewBag.Teacher = teacher;
         
         return View(student);
-    }
-
-    public async Task<IActionResult> Archives()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (userId != null)
-        {
-            var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
-            var subjects = await subjectService.GetSubjectsByTeacherIdAsync(teacher.TeacherID.ToString());
-
-            return View(subjects);
-        }
-
-        return View();
     }
     
     public IActionResult GenerateQrCode(int lectureId)

@@ -57,6 +57,22 @@ public class LecturesController : ControllerBase
         return lectures;
     }
 
+    [HttpGet]
+    [Route("IsAttended/{subjectId}")]
+    public async Task<ActionResult<IEnumerable<Lecture>>> GetLecturesWhichAreAttended(int subjectId)
+    {
+        var lectures = await context.Lectures
+            .Where(l => l.SubjectId == subjectId && l.IsAttended == true)
+            .ToListAsync();
+
+        if (lectures.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return lectures;
+    }
+
     [HttpPost]
     [Route("Save")]
     public async Task<IActionResult> SaveAttendance([FromForm] int lectureId, [FromForm] Dictionary<int, bool> attendance)

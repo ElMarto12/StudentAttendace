@@ -1,18 +1,39 @@
-﻿@model IEnumerable<StudentAttendace.Models.DbModels.Subject>
+﻿@using StudentAttendace.Models.DbModels
+@model IEnumerable<StudentAttendace.Models.DbModels.Subject>
 
 @{
     ViewData["Title"] = "Dalykai";
 }
 
-
-<div class="container-fluid mt-5 custom-bg-green">
-    <div class="col custom-bg-green">
-        @foreach (var sub in Model)
+<div class="container-fluid mt-5 pt-3">
+    @{
+        foreach (var subject in Model)
         {
-            <div class="row custom-bg-white birk">
-                <p>@sub.SubjectName</p>
+            <div class="row mt-4 rounded custom-bg-green">
+                <div class="col d-flex justify-content-between align-items-center">
+                    <p class="mt-2 mb-2">@subject.SubjectName</p>
+                    <button type="button" class="border-0 custom-bg-green " data-bs-toggle="collapse" data-bs-target="#lecturesList_@subject.SubjectId"><i class="bi bi-three-dots" ></i></button>
+                </div>
+                <div class="collapse mb-3 mt-3" id="lecturesList_@subject.SubjectId">
+                    <div class="custom-bg-white rounded p-2">
+                        @{
+                            var lectures = ViewBag.Lecture as IEnumerable<Lecture>;
+                            var filteredLectures = lectures?.Where(l => l.SubjectId == @subject.SubjectId);
+
+                            if (filteredLectures != null)
+                            {
+                                foreach (var fl in filteredLectures)
+                                {
+                                    <div class="col d-flex justify-content-between align-items-center m-2 bg-light rounded">
+                                        <p class="mt-2 mb-2 mx-2">@fl.LectureDate</p>
+                                        <a href="" class="rounded border-0 custom-bg-drkgreen mx-2 py-1 px-1 text-light text-decoration-none">Plačiau</a>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
             </div>
         }
-    </div>
+    }
 </div>
-
