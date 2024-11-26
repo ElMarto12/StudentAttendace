@@ -2,7 +2,7 @@
 
 namespace StudentAttendace.Views.Home;
 
-public class Subjects : PageModel
+public class Archives : PageModel
 {
     public void OnGet()
     {

@@ -78,16 +78,21 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
 
     public async Task<IActionResult> Attendances(Student student)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
+        
         IEnumerable<Subject> subjects = await subjectService.GetSubjectsAsync();
         IEnumerable<SubjectAttendance> subjectAttendances = await subjectService.GetSubjectAttendancesAsync();
         
         ViewBag.Subject = subjects;
         ViewBag.SubjectAttendance = subjectAttendances;
+        ViewBag.Teacher = teacher;
         
         return View(student);
     }
 
-    public async Task<IActionResult> Subjects()
+    public async Task<IActionResult> Archives()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
