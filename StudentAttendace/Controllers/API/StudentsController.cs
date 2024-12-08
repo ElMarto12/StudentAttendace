@@ -46,5 +46,19 @@ public class StudentsController(ApplicationDbContext context): ControllerBase
 
         return students;
     }
+
+    [HttpGet]
+    [Route("StudentLectures/{lectureId}")]
+    public async Task<ActionResult<IEnumerable<StudentsLecture>>> GetStudentsLecturesByLectureId(int lectureId)
+    {
+        var slectures = await context.StudentsLectures.Where(sl => sl.LectureId == lectureId).ToListAsync();
+
+        if (slectures.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return slectures;
+    }
     
 }
