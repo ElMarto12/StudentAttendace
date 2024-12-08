@@ -13,7 +13,7 @@
                     var lectures = ViewBag.Lecture as IEnumerable<StudentAttendace.Models.DbModels.Lecture>;
                     var groups = ViewBag.Group as IEnumerable<StudentAttendace.Models.DbModels.Group>;
 
-                    var filteredLectures = lectures?.Where(l => l.SubjectId == subject.SubjectId);
+                    var filteredLectures = lectures?.Where(l => l.SubjectId == subject.SubjectId && l.IsAttended == false);
 
                     if(filteredLectures != null && filteredLectures.Any())
                     {
