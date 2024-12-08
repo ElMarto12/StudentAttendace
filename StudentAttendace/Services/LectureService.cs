@@ -50,31 +50,4 @@ public class LectureService(HttpClient httpClient)
             throw;
         }
     }
-
-    public async Task<IEnumerable<Lecture>> GetLecturesWhichAreAttended(string subjectId)
-    {
-        try
-        {
-            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Lectures/IsAttended/{subjectId}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                string content = await responseMessage.Content.ReadAsStringAsync();
-
-                return JsonSerializer.Deserialize<IEnumerable<Lecture>>(content, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                }) ?? throw new InvalidCastException();
-            }
-            else
-            {
-                throw new HttpRequestException($"{responseMessage.StatusCode}");
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"{ex.Message}");
-            throw;
-        }
-    }
-    
 }

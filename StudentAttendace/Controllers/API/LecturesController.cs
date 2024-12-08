@@ -58,11 +58,11 @@ public class LecturesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("IsAttended/{subjectId}")]
-    public async Task<ActionResult<IEnumerable<Lecture>>> GetLecturesWhichAreAttended(int subjectId)
+    [Route("IsAttended/{subjectId}/{isAttended}")]
+    public async Task<ActionResult<IEnumerable<Lecture>>> GetLecturesByAttendance(int subjectId, bool isAttended)
     {
         var lectures = await context.Lectures
-            .Where(l => l.SubjectId == subjectId && l.IsAttended == true)
+            .Where(l => l.SubjectId == subjectId && l.IsAttended == isAttended)
             .ToListAsync();
 
         if (lectures.Count == 0)
@@ -145,7 +145,7 @@ public class LecturesController : ControllerBase
         .Select(st => st.Student)
         .ToListAsync();
 
-    int totalLectures = subject.LectureNumber; //10
+    int totalLectures = subject.LectureNumber; 
 
     foreach (var student in lectureStudents)
     {
