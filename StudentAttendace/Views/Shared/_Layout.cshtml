@@ -45,7 +45,8 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link link-body-emphasis">
+                <a class="nav-link link-body-emphasis  @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "GenerateReports" ? "active-button text-light" : "")"
+                   asp-controller="Home" asp-action="GenerateReports">
                     <i class="bi bi-file-text me-2"></i>
                     Ataskaitos
                 </a>
