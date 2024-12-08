@@ -32,11 +32,63 @@ public class GroupService(HttpClient httpClient)
         }
     }
     
+    public async Task<Group> GetGroupByIdAsync(string? groupId)
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Groups/{groupId}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<Group>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+            else
+            {
+                throw new HttpRequestException($"{responseMessage.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+        
+    }
+    
+    
     public async Task<IEnumerable<Group>> GetGroupsByTeacherIdAsync(string? teacherId)
     {
         try
         {
             HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Groups/ByTeacher/{teacherId}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<IEnumerable<Group>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+            else
+            {
+                throw new HttpRequestException($"{responseMessage.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+    }
+    
+    public async Task<IEnumerable<Group>> GetGroupsBySubjectIdAsync(string? subjectId)
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Groups/BySubject/{subjectId}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 string content = await responseMessage.Content.ReadAsStringAsync();

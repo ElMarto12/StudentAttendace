@@ -45,5 +45,22 @@ public class GroupsController(ApplicationDbContext context) : ControllerBase
 
         return groups;
     }
+
+    [HttpGet]
+    [Route("BySubject/{subjectId}")]
+    public async Task<ActionResult<IEnumerable<Group>>> GetGroupsBySubjectId(int subjectId)
+    {
+        var groups = await context.GroupsSubjects
+            .Where(gs => gs.SubjectId == subjectId)
+            .Select(gs => gs.Group)
+            .ToListAsync();
+        
+        if(groups.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return groups;
+    }
     
 }
