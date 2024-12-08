@@ -10,8 +10,8 @@ public class GroupsSubject
     public int GroupsSubjectId { get; set; }
     
     public int GroupId { get; set; } // foreign key - Group
-    public Group Group { get; } = null!;
+    public Group Group { get; set; } = null!;
     
     public int SubjectId { get; set; } // foreign key - Subject
-    public Subject Subject { get; } = null!;
+    public Subject Subject { get; set; } = null!;
 }
