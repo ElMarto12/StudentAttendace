@@ -18,7 +18,7 @@
                     <div class="custom-bg-white rounded p-2">
                         @{
                             var lectures = ViewBag.Lecture as IEnumerable<Lecture>;
-                            var filteredLectures = lectures?.Where(l => l.SubjectId == @subject.SubjectId);
+                            var filteredLectures = lectures?.Where(l => l.SubjectId == @subject.SubjectId && l.IsAttended == true);
 
                             if (filteredLectures != null)
                             {
@@ -26,7 +26,7 @@
                                 {
                                     <div class="col d-flex justify-content-between align-items-center m-2 bg-light rounded">
                                         <p class="mt-2 mb-2 mx-2">@fl.LectureDate</p>
-                                        <a href="" class="rounded border-0 custom-bg-drkgreen mx-2 py-1 px-1 text-light text-decoration-none">Plačiau</a>
+                                        <a href="@Url.Action("GetLectureById", "Lectures", new {id = @fl.LectureId})" class="rounded border-0 custom-bg-drkgreen mx-2 py-1 px-1 text-light text-decoration-none">Plačiau</a>
                                     </div>
                                 }
                             }
