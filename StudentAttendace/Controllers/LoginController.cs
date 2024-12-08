@@ -31,21 +31,28 @@ public class LoginController(ILogger<LoginController> logger, ApplicationDbConte
             var claims = new List<Claim>
             {
                 new Claim("Email", user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
-                RedirectUri = Url.Action("Index", "Home")
+               // RedirectUri = Url.Action("Index", "Home")
             };
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            return RedirectToAction("Index", "Home");
-
+            if (user is { Role: "Teacher" })
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user is { Role: "Admin" })
+            {
+                return RedirectToAction("Index", "Admin");
+            }
         }
         
         ModelState.AddModelError(string.Empty, "Invalid Credentials");
