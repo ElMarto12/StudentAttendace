@@ -1,0 +1,50 @@
+﻿@using StudentAttendace.Models.DbModels
+@{
+    ViewData["Title"] = "Generuoti ataskaitas";
+}
+
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col custom-bg-green rounded mx-lg-5 mx-sm-3">
+            <p class="mt-2 fs-4">Generuoti pasirinkto dalyko ataskaitą</p>
+            <p class="mt-1">Galite sugeneruoti ataskaitą, pasirinkus dėstomą dalyką</p>
+            <div class="mb-3 mt-5">
+                <button type="button" class="rounded border-0 custom-bg-drkgreen py-1 px-2 text-light text-decoration-none" data-bs-toggle="collapse" data-bs-target="#subjectList">Pasirinkti</button>
+            </div>
+        </div>
+        <div class="col custom-bg-green rounded mx-lg-5 mx-sm-3">
+            <p class="mt-2 fs-4">Generuoti studento ataskatą</p>
+            <p class="mt-1">Galite sugeneruoti ataskaitą, pasirinkus studentą, individualiai</p>
+            <div class="mb-3 mt-5">
+                <button type="button" class="rounded border-0 custom-bg-drkgreen py-1 px-2 text-light text-decoration-none" data-bs-toggle="collapse" data-bs-target="#studentList">Pasirinkti</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col p-0 mx-lg-5 mx-sm-3">
+            <div class="collapse custom-bg-green rounded mx-0 py-3" id="subjectList">
+                @{
+                    var subjects = ViewBag.Subject as IEnumerable<Subject>;
+                    
+                    foreach (var subject in subjects)
+                    {
+                        <div class="row">
+                            <div class="col mx-4 my-2 rounded custom-bg-white d-flex justify-content-between align-items-center">
+                                <p class="px-1 my-2">@subject.SubjectName</p>
+                                <a href="@Url.Action("GenerateReportBySubject", "Report", new { subjectId = @subject.SubjectId } )"
+                                   class="rounded border-0 custom-bg-drkgreen py-1 px-2 text-light text-decoration-none">Pasirinkti</a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col p-0 mx-lg-5 mx-sm-3">
+            <div class="collapse custom-bg-green rounded" id="studentList">
+                @{
+                    var groups = ViewBag.Group as IEnumerable<Group>;
+                } 
+            </div>
+        </div>
+    </div>
+</div>
