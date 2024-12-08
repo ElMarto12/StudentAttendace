@@ -75,13 +75,7 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
         {
             var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
             var subjects = await subjectService.GetSubjectsByTeacherIdAsync(teacher.TeacherID.ToString());
-
-            List<Lecture> lectures = new List<Lecture>();
-
-            foreach (var s in subjects)
-            {
-                lectures.AddRange(await lectureService.GetLecturesWhichAreAttended(s.SubjectId.ToString()));
-            }
+            var lectures = await lectureService.GetLecturesBySubjectIdAsync(subjects);
 
             ViewBag.Lecture = lectures;
             
@@ -95,6 +89,14 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
     {
         IEnumerable<Student> students = await studentService.GetStudentsAsync();
 
+        if (lecture.IsAttended)
+        {
+            IEnumerable<StudentsLecture> sLectures =
+                await studentService.GetStudentsLecturesByLectureIdAsync(lecture.LectureId.ToString());
+
+            ViewBag.StudentLecture = sLectures;
+        }
+        
         ViewBag.Student = students;
         
         return View(lecture);
@@ -133,6 +135,20 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
     public IActionResult StudentQrLogin(int lectureId)
     {
         ViewBag.LectureId = lectureId;
+        
+        return View();
+    }
+
+    public async Task<IActionResult> GenerateReports()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
+        var subjects = await subjectService.GetSubjectsByTeacherIdAsync(teacher.TeacherID.ToString());
+        var groups = await groupService.GetGroupsByTeacherIdAsync(teacher.TeacherID.ToString());
+
+        ViewBag.Subject = subjects;
+        ViewBag.Group = groups;
         
         return View();
     }
