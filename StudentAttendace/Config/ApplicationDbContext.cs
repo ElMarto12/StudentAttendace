@@ -28,4 +28,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public required DbSet<StudentsLecture> StudentsLectures { get; set; }
     
+    public required DbSet<LectureTime> LectureTimes { get; set; }
+    
 }

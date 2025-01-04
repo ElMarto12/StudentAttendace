@@ -13,10 +13,6 @@ public class Group
     [Column(TypeName = "varchar(255)")]
     public string GroupName { get; set;}
     
-    [Required]
-    [Column(TypeName = "int")]
-    public int StudentAmount { get; set; }
-    
     public List<Lecture> Lectures { get; set; } = new List<Lecture>();
     public List<TeachersGroup> TeachersGroups { get; set; } = new List<TeachersGroup>();
     public List<Student> Students { get; set; } = new List<Student>();

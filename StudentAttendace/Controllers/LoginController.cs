@@ -39,7 +39,6 @@ public class LoginController(ILogger<LoginController> logger, ApplicationDbConte
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
-               // RedirectUri = Url.Action("Index", "Home")
             };
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
@@ -47,11 +46,11 @@ public class LoginController(ILogger<LoginController> logger, ApplicationDbConte
 
             if (user is { Role: "Teacher" })
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Lectures", "Home");
             }
             else if (user is { Role: "Admin" })
             {
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("AdminLecture", "Admin");
             }
         }
         

@@ -22,6 +22,4 @@ public class Teacher
     public List<TeachersGroup> TeachersGroups { get; } = new List<TeachersGroup>();
     
     public int UserId { get; set; }
-    public User User { get; set; } = null!;
-    
 }

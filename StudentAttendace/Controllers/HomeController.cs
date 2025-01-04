@@ -146,9 +146,17 @@ public class HomeController(ILogger<HomeController> logger, TeacherService teach
         var teacher = await teacherService.GetTeacherByUserIdAsync(userId);
         var subjects = await subjectService.GetSubjectsByTeacherIdAsync(teacher.TeacherID.ToString());
         var groups = await groupService.GetGroupsByTeacherIdAsync(teacher.TeacherID.ToString());
+        
+        List<Student> students = new List<Student>();
+
+        foreach (var group in groups)
+        {
+            students.AddRange(await studentService.GetStudentsByGroupIdAsync(group.GroupID.ToString()));
+        }
 
         ViewBag.Subject = subjects;
         ViewBag.Group = groups;
+        ViewBag.Student = students;
         
         return View();
     }

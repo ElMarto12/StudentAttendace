@@ -28,6 +28,27 @@ public class LecturesController : ControllerBase
     }
 
     [HttpGet]
+    [Route("GetLectureTime")]
+    public async Task<ActionResult<IEnumerable<LectureTime>>> GetLectureTimes()
+    {
+        return await context.LectureTimes.ToListAsync();
+    }
+    
+    [HttpGet]
+    [Route("GetLectureTimeById/{id}")]
+    public async Task<ActionResult<LectureTime>> GetLectureTimeById(int id)
+    {
+        var lectureTime = await context.LectureTimes.FindAsync(id);
+
+        if (lectureTime == null)
+        {
+            return NotFound();
+        }
+        
+        return lectureTime;
+    }
+    
+    [HttpGet]
     [Route("{id}")]
     public async Task<ActionResult<Lecture>> GetLectureById(int id)
     {
@@ -74,6 +95,80 @@ public class LecturesController : ControllerBase
     }
 
     [HttpPost]
+    [Route("/AddNewLecture")]
+    public async Task<ActionResult<IEnumerable<Lecture>>> CreateLecture([FromForm] Lecture? lecture)
+    {
+        if (lecture != null)
+        {
+            var culture = new System.Globalization.CultureInfo("lt-Lt");
+            lecture.WeekDay = culture.DateTimeFormat.GetDayName(lecture.LectureDate.DayOfWeek);     
+            lecture.WeekDay = culture.TextInfo.ToTitleCase(lecture.WeekDay.ToLower());
+            
+            var newLecture = new Lecture
+            {
+                LectureDate = lecture.LectureDate,
+                IsAttended = lecture.IsAttended,
+                WeekDay = lecture.WeekDay,
+                GroupId = lecture.GroupId,
+                SubjectId = lecture.SubjectId,
+                LectureTimeId = lecture.LectureTimeId
+            };
+
+            await context.Lectures.AddAsync(newLecture);
+
+            await context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("AdminLecture", "Admin");
+    }
+
+    [HttpPost]
+    [HttpDelete]
+    [Route("/DeleteLecture")]
+    public async Task<ActionResult<Lecture>> DeleteLecture(int lectureId)
+    {
+        var lecture = await context.Lectures.FindAsync(lectureId);
+
+        if (lecture != null)
+        {
+            context.Lectures.Remove(lecture);
+            await context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("AdminLecture", "Admin");
+    }
+
+    [HttpPost]
+    [HttpPut]
+    [Route("/UpdateLecture")]
+    public async Task<ActionResult<Lecture>> UpdateLecture([FromForm] Lecture? lecture)
+    {
+        var lectureUpdate = await context.Lectures.FindAsync(lecture?.LectureId);
+        
+        if (lectureUpdate == null)
+        {
+            return NotFound();
+        }
+        
+        var culture = new System.Globalization.CultureInfo("lt-Lt");
+        lecture.WeekDay = culture.DateTimeFormat.GetDayName(lecture.LectureDate.DayOfWeek);     
+        lecture.WeekDay = culture.TextInfo.ToTitleCase(lecture.WeekDay.ToLower());
+
+        lectureUpdate.LectureDate = lecture.LectureDate;
+        lectureUpdate.IsAttended = lecture.IsAttended;
+        lectureUpdate.WeekDay = lecture.WeekDay;
+        lectureUpdate.SubjectId = lecture.SubjectId;
+        lectureUpdate.GroupId = lecture.GroupId;
+        lectureUpdate.LectureTimeId = lecture.LectureTimeId;
+
+        context.Entry(lectureUpdate).State = EntityState.Modified;
+        await context.SaveChangesAsync();
+
+        return RedirectToAction("AdminLecture", "Admin");
+    }
+    
+    
+    [HttpPost]
     [Route("Save")]
     public async Task<IActionResult> SaveAttendance([FromForm] int lectureId, [FromForm] Dictionary<int, bool> attendance)
     {
@@ -113,8 +208,9 @@ public class LecturesController : ControllerBase
         await context.SaveChangesAsync();
 
         await CalculateAttendancePercentage(lectureId);
+        await ChangeLectureAttendance(lectureId);
         
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Lectures", "Home");
     }
 
     [HttpPost]
@@ -147,49 +243,50 @@ public class LecturesController : ControllerBase
 
     int totalLectures = subject.LectureNumber; 
 
-    foreach (var student in lectureStudents)
-    {
-        int notAttendedLectures = 0;
-        
-        foreach (var lecture in subjectLectures)
+        foreach (var student in lectureStudents)
         {
-            var attendance = await context.StudentsLectures
-                .Where(sl => sl.LectureId == lecture.LectureId && sl.StudentId == student.StudentID)
-                .FirstOrDefaultAsync();
-
-            if (attendance != null && attendance.IsParticipating == false)
+            int notAttendedLectures = 0;
+            
+            foreach (var lecture in subjectLectures)
             {
-                notAttendedLectures++;
+                var attendance = await context.StudentsLectures
+                    .Where(sl => sl.LectureId == lecture.LectureId && sl.StudentId == student.StudentID)
+                    .FirstOrDefaultAsync();
+
+                if (attendance != null && attendance.IsParticipating == false)
+                {
+                    notAttendedLectures++;
+                }
+            }
+
+
+            notAttendedLectures = totalLectures - notAttendedLectures;
+            decimal attendancePercentage = (decimal)(notAttendedLectures * 100) / totalLectures;
+            
+            var existingAttendance = await context.SubjectAttendances
+                .FirstOrDefaultAsync(sa => sa.SubjectId == subject.SubjectId && sa.StudentId == student.StudentID);
+
+            if (existingAttendance != null)
+            {
+                existingAttendance.AttendancePercentage = attendancePercentage;
+                context.SubjectAttendances.Update(existingAttendance);
+            }
+            else
+            {
+                var newAttendance = new SubjectAttendance
+                {
+                    AttendancePercentage = attendancePercentage,
+                    SubjectId = subject.SubjectId,
+                    StudentId = student.StudentID
+                };
+                await context.SubjectAttendances.AddAsync(newAttendance);
             }
         }
 
+        await context.SaveChangesAsync();
 
-        notAttendedLectures = totalLectures - notAttendedLectures;
-        decimal attendancePercentage = (decimal)(notAttendedLectures * 100) / totalLectures;
-        
-        var existingAttendance = await context.SubjectAttendances
-            .FirstOrDefaultAsync(sa => sa.SubjectId == subject.SubjectId && sa.StudentId == student.StudentID);
-
-        if (existingAttendance != null)
-        {
-            existingAttendance.AttendancePercentage = attendancePercentage;
-            context.SubjectAttendances.Update(existingAttendance);
-        }
-        else
-        {
-            var newAttendance = new SubjectAttendance
-            {
-                AttendancePercentage = attendancePercentage,
-                SubjectId = subject.SubjectId,
-                StudentId = student.StudentID
-            };
-            await context.SubjectAttendances.AddAsync(newAttendance);
-        }
-    }
-
-    await context.SaveChangesAsync();
-
-    return Ok();
+        return Ok();
+    
     }
 
     [HttpPost]
@@ -204,5 +301,20 @@ public class LecturesController : ControllerBase
 
         return RedirectToAction("StudentQrLogin", "Home");
     }
-    
+
+    private async Task<IActionResult> ChangeLectureAttendance(int lectureId)
+    {
+        var lecture = await context.Lectures.
+                Where(l => l.LectureId == lectureId).FirstOrDefaultAsync();
+
+        if (lecture != null)
+        {
+            lecture.IsAttended = true;
+
+            context.Entry(lecture).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+        }
+
+        return Ok();
+    }
 }

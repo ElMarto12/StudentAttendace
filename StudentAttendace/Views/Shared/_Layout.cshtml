@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="lt">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -12,18 +12,11 @@
 <main class="d-flex flex-nowrap custom-bg-white">
     <div class="d-flex flex-column flex-shrink-0 p-3 custom-bg-green sidebar">
         <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <span class="fs-4">Lankomumas</span>
+            <span class="fs-4">Lankomumo žymėjimas</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-button text-light" : "")"
-                   asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-house me-2"></i>
-                    Pagrindinis
-                </a>
-            </li>
-            <li>
                 <a class="nav-link link-body-emphasis @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Lectures" ? "active-button text-light" : "")"
                    asp-controller="Home" asp-action="Lectures">
                     <i class="bi bi-book me-2"></i>
@@ -55,7 +48,7 @@
         <hr>
         <form method="post" class="d-inline-flex" asp-controller="Login" asp-action="LogOut">
             <button type="submit" class="btn">
-                <i class="bi bi-x-circle"></i>
+                <i class="bi bi-box-arrow-left"></i>
             </button>
             @await Component.InvokeAsync("TeacherInfoView")
         </form>

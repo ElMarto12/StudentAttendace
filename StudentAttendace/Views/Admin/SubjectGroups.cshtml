@@ -1,0 +1,67 @@
+﻿@using StudentAttendace.Models.DbModels
+@model StudentAttendace.Models.DbModels.Subject;
+
+@{
+    Layout = "_LayoutAdmin";
+    var groups = ViewBag.Group as IEnumerable<Group>;
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Priskirti grupes dėstomam dalykui</h2>
+    <form asp-action="AddSubjectGroups" asp-controller="Subjects" method="post">
+        <input hidden name="SubjectId" id="SubjectId" value="@Model.SubjectId"/>
+        <div class="mb-3">
+            <label for="Groups" class="form-label">Priskirti grupes</label>
+            <div id="groups-container">
+                <div class="input-group mb-2">
+                    <select name="GroupIds" class="form-select" required>
+                        <option value="">Pasirinkite grupę</option>
+                        @foreach (var group in groups)
+                        {
+                        <option value="@group.GroupID">@group.GroupName</option>
+                        }
+                    </select>
+                    <button type="button" class="btn btn-success add-group-btn">+</button>
+                    <div class="invalid-feedback">
+                        Prašome pasirinkti grupę.
+                    </div>
+                </div>
+            </div>
+            <small class="text-muted">Galite pridėti daugiau grupių spausdami „+“.</small>
+        </div>
+        
+        <button type="submit" class="custom-bg-darkblue rounded border-0 text-light">Priskirti grupes</button>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('groups-container');
+        const addButtonClass = 'add-group-btn';
+        
+        container.addEventListener('click', function (e) {
+            if (e.target.classList.contains(addButtonClass)) {
+                const newGroup = container.querySelector('.input-group').cloneNode(true);
+                
+                newGroup.querySelector('select').value = '';
+                container.appendChild(newGroup);
+                
+                const removeButton = newGroup.querySelector(`.${addButtonClass}`);
+                removeButton.textContent = '-';
+                removeButton.classList.replace('btn-success', 'btn-danger');
+                removeButton.classList.replace(addButtonClass, 'remove-group-btn');
+            }
+        });
+        
+        container.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-group-btn')) {
+                const groupElement = e.target.closest('.input-group');
+                if (container.children.length > 1) {
+                    groupElement.remove();
+                }
+            }
+        });
+    });
+</script>
+}

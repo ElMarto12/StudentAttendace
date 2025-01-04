@@ -50,4 +50,79 @@ public class LectureService(HttpClient httpClient)
             throw;
         }
     }
+
+    public async Task<IEnumerable<LectureTime>> GetLectureTimesAsync()
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Lectures/GetLectureTime");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<IEnumerable<LectureTime>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+            else
+            {
+                throw new HttpRequestException($"{responseMessage.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+    }
+
+    public async Task<LectureTime> GetLectureTimeById(int lectureTimeId)
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Lectures/GetLectureTimeById/{lectureTimeId}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<LectureTime>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+            else
+            {
+                throw new HttpRequestException($"{responseMessage.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+    }
+    
+    public async Task<IEnumerable<Lecture>> GetLecturesAsync()
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Lectures");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<IEnumerable<Lecture>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+            else
+            {
+                throw new HttpRequestException($"{responseMessage.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+    }
 }

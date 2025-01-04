@@ -1,0 +1,69 @@
+﻿@model IEnumerable<StudentAttendace.Models.DbModels.Subject>;
+
+@{
+    Layout = "_LayoutAdmin";
+}
+<div class="container-fluid mt-5 pt-3 px-0">
+    <div class="row">
+        <div class="col">
+            <input id="searchQuery" class="form-control border-0 rounded py-2" placeholder="Ieškoti"/>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <a asp-controller="Admin" asp-action="CreateSubject" class="nav-link border-0 rounded custom-bg-darkblue text-light p-2">Pridėti</a>
+        </div>
+    </div>
+</div>
+<div id="subject-list-container" class="container-fluid my-5 custom-bg-blue pb-2 rounded">
+    <div class="row mb-2">
+        <p class="py-2">Dalykai</p>
+    </div>
+    @{
+        foreach (var subject in Model)
+        {
+            <div class="subject-item row mx-2 custom-bg-lightblue rounded mb-2">
+                <div class="col">
+                    <p class="my-2">@subject.SubjectName</p>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <a asp-controller="Admin" asp-action="SubjectGroups" asp-route-subjectId="@subject.SubjectId" class="border-0 rounded custom-bg-darkblue text-light my-2 text-decoration-none">Grupės</a>
+                    <a asp-controller="Admin" asp-action="UpdateSubject" asp-route-subjectId="@subject.SubjectId" class="border-0 rounded custom-bg-darkblue text-light mx-3 my-2 text-decoration-none">Redaguoti</a>
+                    <form method="post" asp-controller="Subjects" asp-action="DeleteSubject" asp-route-subjectId="@subject.SubjectId">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button type="submit" class="border-0 rounded custom-bg-darkblue text-light my-2">Šalinti</button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchQuery');
+        const subjectItems = document.querySelectorAll('.subject-item');
+        const noResultsMessage = document.createElement('p'); 
+
+        noResultsMessage.textContent = 'Nerasta įrašų';
+        noResultsMessage.style.display = 'none';
+        
+        document.getElementById('subject-list-container').appendChild(noResultsMessage);
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            let anyVisible = false;
+
+            subjectItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+
+                if (text.includes(query)) {
+                    item.style.display = '';
+                    anyVisible = true;
+                } else {
+                    item.style.display = 'none'; 
+                }
+            });
+            
+            noResultsMessage.style.display = anyVisible ? 'none' : '';
+        });
+    });
+
+</script>

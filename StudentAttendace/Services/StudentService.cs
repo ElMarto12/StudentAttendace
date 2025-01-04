@@ -32,7 +32,33 @@ public class StudentService(HttpClient httpClient)
             throw;
         }
     }
-    
+
+    public async Task<Student> GetOneStudentAsync(string? studentId)
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Students/ById/{studentId}");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+
+                return JsonSerializer.Deserialize<Student>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+            else
+            {
+                throw new HttpRequestException($"{responseMessage.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+    }
     
     public async Task<IEnumerable<Student>> GetStudentsByGroupIdAsync(string? groupId)
     {
@@ -61,17 +87,18 @@ public class StudentService(HttpClient httpClient)
         }
     }
 
-    public async Task<IEnumerable<SubjectAttendance>> GetSubjectAttendancesByStudentIdAsync(string? studentId)
+    public async Task<IEnumerable<StudentsLecture>> GetStudentsLecturesByLectureIdAsync(string? lectureId)
     {
         try
         {
-            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Students/ByStudent/{studentId}");
+            HttpResponseMessage responseMessage =
+                await _httpClient.GetAsync($"api/Students/StudentLectures/{lectureId}");
 
             if (responseMessage.IsSuccessStatusCode)
             {
                 string content = await responseMessage.Content.ReadAsStringAsync();
 
-                return JsonSerializer.Deserialize<IEnumerable<SubjectAttendance>>(content, new JsonSerializerOptions
+                return JsonSerializer.Deserialize<IEnumerable<StudentsLecture>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 }) ?? throw new InvalidCastException();
@@ -88,12 +115,12 @@ public class StudentService(HttpClient httpClient)
         }
     }
 
-    public async Task<IEnumerable<StudentsLecture>> GetStudentsLecturesByLectureIdAsync(string? lectureId)
+    public async Task<IEnumerable<StudentsLecture>> GetStudentsLecturesAsync()
     {
         try
         {
             HttpResponseMessage responseMessage =
-                await _httpClient.GetAsync($"api/Students/StudentLectures/{lectureId}");
+                await _httpClient.GetAsync($"api/Students/StudentLectures");
 
             if (responseMessage.IsSuccessStatusCode)
             {

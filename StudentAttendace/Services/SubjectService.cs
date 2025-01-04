@@ -101,4 +101,50 @@ public class SubjectService(HttpClient httpClient)
             throw;
         }
     }
+
+    public async Task<IEnumerable<SubjectAttendance>> GetSubjectAttendanceBySubjectIdAsync(int subjectId)
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/SubjectsAttendance/BySubject/{subjectId}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<IEnumerable<SubjectAttendance>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+
+            throw new HttpRequestException($"{responseMessage.StatusCode}");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+    }
+    
+    public async Task<IEnumerable<SubjectAttendance>> GetSubjectAttendanceByStudentIdAsync(int studentId)
+    {
+        try
+        {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/SubjectsAttendance/ByStudent/{studentId}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<IEnumerable<SubjectAttendance>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? throw new InvalidCastException();
+            }
+
+            throw new HttpRequestException($"{responseMessage.StatusCode}");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+            throw;
+        }
+    }
 }

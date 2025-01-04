@@ -25,10 +25,6 @@ html {
   height: 100vh;
 }
 
-.custom-bg-drkgreen{
-  background-color: #55883B;
-}
-
 .custom-bg-green{
   background-color: #C1E899;
 }
@@ -37,9 +33,20 @@ html {
   background-color: #E6F0DC;
 }
 
-.active-button{
+.active-button, .custom-bg-drkgreen{
   background-color: #55883B;
-  color: #ffffff;
+}
+
+.active-button-blue, .custom-bg-darkblue{
+  background-color: #2a9abf;
+}
+
+.custom-bg-blue{
+  background-color: #77d3f2;
+}
+
+.custom-bg-lightblue{
+  background-color: #caf0fc;
 }
 
 .custom-element-height-90{

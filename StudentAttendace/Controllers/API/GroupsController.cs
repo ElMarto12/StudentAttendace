@@ -47,6 +47,20 @@ public class GroupsController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpGet]
+    [Route("ByStudent/{studentId}")]
+    public async Task<ActionResult<Group>> GetGroupByStudentId(int studentId)
+    {
+        var group = await context.Groups.FindAsync(studentId);
+
+        if (group == null)
+        {
+            return NotFound();
+        }
+        
+        return group;
+    }
+    
+    [HttpGet]
     [Route("BySubject/{subjectId}")]
     public async Task<ActionResult<IEnumerable<Group>>> GetGroupsBySubjectId(int subjectId)
     {
@@ -61,6 +75,40 @@ public class GroupsController(ApplicationDbContext context) : ControllerBase
         }
 
         return groups;
+        
     }
-    
+
+    [HttpPost]
+    [Route("/CreateGroup")]
+    public async Task<ActionResult<Group>> AddNewGroup([FromForm] Group? group)
+    {
+        if (group != null)
+        {
+            var newGroup = new Group
+            {
+                GroupName = group.GroupName
+            };
+            
+            await context.Groups.AddAsync(newGroup);
+            await context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("AdminGroup", "Admin");
+    }
+
+    [HttpPost]
+    [HttpDelete]
+    [Route("/DeleteGroup")]
+    public async Task<ActionResult<Group>> DeleteGroup(int groupId)
+    {
+        var group = await context.Groups.Where(gr => gr.GroupID == groupId).FirstOrDefaultAsync();
+
+        if (group != null)
+        {
+            context.Groups.Remove(group);
+            await context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("AdminGroup", "Admin");
+    }
 }

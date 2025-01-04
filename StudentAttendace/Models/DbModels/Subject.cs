@@ -23,5 +23,4 @@ public class Subject
     public List<StudentsSubject> StudentsSubjects { get; set; } = new List<StudentsSubject>();
     
     public int TeacherId { get; set; } // foreign key - Teacher
-    public Teacher Teacher { get; set; } = null!;
 }

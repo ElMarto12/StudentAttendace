@@ -47,6 +47,14 @@ builder.Services.AddScoped<LectureService>(sp =>
     var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
     return new LectureService(httpClientFactory.CreateClient("ApiClient"));
 });
+
+builder.Services.AddScoped<UserService>(sp =>
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new UserService(httpClientFactory.CreateClient("ApiClient"));
+    
+});
+
 builder.Services.AddScoped<PdfReportService>();
 
 builder.Services.AddAuthentication(options => {

@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid mt-5">
+    <form asp-action="AddNewStudent" asp-controller="Students" method="post" class="mt-4">
+        <div class="row">
+            <div class="col mb-3">
+                <label for="Name" class="form-label">Vardas</label>
+                <input name="Name" id="Name" class="form-control" placeholder="Įveskite vardą" required/>
+            </div>
+            <div class="col mb-3">
+                <label for="LastName" class="form-label">Pavardė</label>
+                <input name="LastName" id="LastName" class="form-control" placeholder="Įveskite pavardę" required/>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="Email" class="form-label">El. paštas</label>
+            <input name="Email" id="Email" type="email" class="form-control" placeholder="Įveskite el. pašto adresą" required/>
+            
+        </div>
+
+        <div class="mb-3">
+            <label for="Password" class="form-label">Slaptažodis</label>
+            <input name="Password" id="Password" type="password" class="form-control" placeholder="Įveskite slaptažodį" required/>
+
+        </div>
+        <div class="mb-3">
+            <label for="GroupId" class="form-label">Grupė</label>
+            <select name="GroupId" id="GroupId" class="form-select" required>
+                <option value="">Pasirinkite grupę</option>
+                @{
+                    foreach (var group in ViewBag.Group)
+                    {
+                        <option value="@group.GroupID">@group.GroupName</option>
+                    }   
+                }
+                
+            </select>
+        </div>
+        <button type="submit" class="custom-bg-darkblue text-light border-0 rounded mt-3 p-2">Pridėti studentą</button>
+    </form>
+</div>

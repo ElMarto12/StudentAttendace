@@ -1,0 +1,83 @@
+﻿@using StudentAttendace.Models.DbModels
+@model IEnumerable<StudentAttendace.Models.DbModels.Lecture>
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid mt-5 pt-3 px-0">
+    <div class="row">
+        <div class="col">
+            <input id="searchQuery" class="form-control border-0 rounded py-2" placeholder="Ieškoti"/>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <a asp-controller="Admin" asp-action="CreateLecture" class="nav-link border-0 rounded custom-bg-darkblue text-light p-2">Pridėti</a>
+        </div>
+    </div>
+</div>
+<div id="lecture-list-container" class="container-fluid my-5 custom-bg-blue pb-2 rounded">
+    <div class="row mb-2">
+        <p class="py-2">Paskaitos</p>
+    </div>
+    @{
+        foreach (var lectures in Model)
+        {
+            var lectureTime = ViewBag.LectureTime as IEnumerable<LectureTime>;
+            lectureTime = lectureTime?.Where(lt => lt.LectureTimeId == lectures.LectureTimeId);
+
+            var groups = ViewBag.Group as IEnumerable<Group>;
+            groups = groups?.Where(gr => gr.GroupID == lectures.GroupId);
+
+            var subjects = ViewBag.Subject as IEnumerable<Subject>;
+            subjects = subjects?.Where(sub => sub.SubjectId == lectures.SubjectId);
+
+            var subject = subjects?.FirstOrDefault();
+            var time = lectureTime?.FirstOrDefault();
+            var group = groups?.FirstOrDefault();
+            
+            <div class="lecture-item row mx-2 custom-bg-lightblue rounded mb-2">
+                <div class="col">
+                    <p class="my-2">@group?.GroupName @subject?.SubjectName @lectures.LectureDate.ToString("yyyy-MM-dd") @lectures.WeekDay @time?.TimeStart - @time?.TimeEnd</p>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <a asp-controller="Admin" asp-action="UpdateLecture" asp-route-lectureId="@lectures.LectureId" class="border-0 rounded custom-bg-darkblue text-light mx-3 my-2 text-decoration-none">Redaguoti</a>
+                    <form method="post" asp-controller="Lectures" asp-action="DeleteLecture" asp-route-lectureId="@lectures.LectureId">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button type="submit" class="border-0 rounded custom-bg-darkblue text-light my-2">Šalinti</button>
+                    </form>
+                </div>
+            </div>    
+        }
+    }
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchQuery');
+        const lectureItems = document.querySelectorAll('.lecture-item');
+        const noResultsMessage = document.createElement('p'); 
+
+        noResultsMessage.textContent = 'Nerasta įrašų';
+        noResultsMessage.style.display = 'none';
+        
+        document.getElementById('lecture-list-container').appendChild(noResultsMessage);
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            let anyVisible = false;
+
+            lectureItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+
+                if (text.includes(query)) {
+                    item.style.display = '';
+                    anyVisible = true;
+                } else {
+                    item.style.display = 'none'; 
+                }
+            });
+            
+            noResultsMessage.style.display = anyVisible ? 'none' : '';
+        });
+    });
+
+</script>

@@ -43,6 +43,25 @@
             <div class="collapse custom-bg-green rounded" id="studentList">
                 @{
                     var groups = ViewBag.Group as IEnumerable<Group>;
+                    
+                    foreach (var group in groups) 
+                    {
+                        <p class="p-2">@group.GroupName</p>
+                            
+                        var students = ViewBag.Student as IEnumerable<Student>;
+                        students = students.Where(st => st.GroupId == group.GroupID);
+
+                        foreach (var student in students)
+                        {
+                            <div class="row">
+                                <div class="col mx-4 my-2 rounded custom-bg-white d-flex justify-content-between align-items-center">
+                                    <p class="px-1 my-2">@student.Name @student.LastName</p>
+                                    <a href="@Url.Action("GenerateStudentAttendanceReportByTeacher", "Report", new {studentId = @student.StudentID})"
+                                       class="rounded border-0 custom-bg-drkgreen py-1 px-2 text-light text-decoration-none">Pasirinkti</a>
+                                </div>
+                            </div>
+                        }
+                    }
                 } 
             </div>
         </div>

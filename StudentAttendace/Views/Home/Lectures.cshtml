@@ -26,7 +26,7 @@
                                 <div class="row border mt-2 border-light custom-bg-white rounded">
                                     <div class="col d-flex justify-content-between align-content-center py-2">
                                         <div class="col d-flex flex-grow-1">
-                                            <p>@lecture.LectureDate</p>
+                                            <p>@lecture.LectureDate.ToString("yyyy-MM-dd")</p>
                                             <p class="mx-3">@group.GroupName</p>
                                         </div>
                                         <a href="@Url.Action("GetLectureById", "Lectures", new {id = @lecture.LectureId})" class="btn-info custom-bg-drkgreen rounded text-light text-decoration-none border-0 px-4 py-1 mt-1">Atidaryti</a>

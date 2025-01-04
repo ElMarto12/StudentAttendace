@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid mt-5">
+    <form method="post" asp-controller="Groups" asp-action="AddNewGroup" class="mt-4">
+        <label for="GroupName" class="form-label">Grupės pavadinimas</label>
+        <input name="GroupName" id="GroupName" class="form-control" placeholder="Įrašykite grupės pavadinimą" required/>
+        <button type="submit" class="custom-bg-darkblue text-light border-0 rounded mt-3 p-2">Pridėti grupę</button>
+    </form>
+</div>

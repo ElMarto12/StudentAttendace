@@ -1,0 +1,32 @@
+﻿@model IEnumerable<StudentAttendace.Models.DbModels.Teacher>;
+
+@{
+    Layout = "_LayoutAdmin";
+}
+<div class="container-fluid mt-5">
+    <form asp-action="AddNewSubject" asp-controller="Subjects" method="post" class="mt-4">
+        <div class="row">
+            <div class="col mb-3">
+                <label for="SubjectName" class="form-label">Dalyko pavadinimas</label>
+                <input name="SubjectName" id="SubjectName" class="form-control" placeholder="Įveskite pavadinimą" required/>
+            </div>
+            <div class="col mb-3">
+                <label for="LectureNumber" class="form-label">Paskaitų skaičius</label>
+                <input name="LectureNumber" id="LectureNumber" class="form-control" placeholder="Įveskite paskaitų skaičių" required/>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="TeacherId" class="form-label">Dėstytojas</label>
+            <select name="TeacherId" id="TeacherId" class="form-select" required>
+                <option value="">Pasirinkite dėstytoją</option>
+                @{
+                    foreach (var teacher in Model)
+                    {
+                        <option value="@teacher.TeacherID">@teacher.Name @teacher.LastName</option>
+                    }   
+                }
+            </select>
+        </div>
+        <button type="submit" class="custom-bg-darkblue text-light border-0 rounded mt-3 p-2">Pridėti dalyką</button>
+    </form>
+</div>

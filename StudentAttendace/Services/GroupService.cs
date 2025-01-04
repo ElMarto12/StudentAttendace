@@ -32,11 +32,11 @@ public class GroupService(HttpClient httpClient)
         }
     }
     
-    public async Task<Group> GetGroupByIdAsync(string? groupId)
+    public async Task<Group> GetGroupByStudentIdAsync(int studentId)
     {
         try
         {
-            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Groups/{groupId}");
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"api/Groups/ByStudent/{studentId}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 string content = await responseMessage.Content.ReadAsStringAsync();

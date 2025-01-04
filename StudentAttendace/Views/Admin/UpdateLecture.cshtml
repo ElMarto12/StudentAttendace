@@ -1,0 +1,70 @@
+﻿@using StudentAttendace.Models.DbModels
+@model StudentAttendace.Models.DbModels.Lecture;
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid mt-5">
+    <form asp-action="UpdateLecture" asp-controller="Lectures" method="post" class="mt-4">
+        <input hidden name="LectureId" id="LectureId" value="@Model.LectureId"/>
+        <input hidden name="IsAttended" id="IsAttended" value="false"/>
+        <input hidden name="WeekDay" id="WeekDay" value="@Model.WeekDay"/>
+        <div class="row">
+            <div class="col mb-3">
+                <label for="LectureDate" class="form-label">Paskaitos data</label>
+                <input type="date" class="form-control" id="LectureDate" name="LectureDate" value="@Model.LectureDate.ToString("yyyy-MM-dd")" required>
+            </div>
+            <div class="col mb-3">
+                <label for="GroupId" class="form-label">Grupė</label>
+                <select name="GroupId" id="GroupId" class="form-select" required>
+                    @{
+                        var groups = ViewBag.Group as IEnumerable<Group>;
+                        var groupName = groups?.FirstOrDefault(gr => gr.GroupID == @Model.GroupId);
+
+                        <option value="@groupName.GroupID">@groupName.GroupName</option>
+                        foreach (var group in ViewBag.Group)
+                        {
+                            <option value="@group.GroupID">@group.GroupName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="SubjectId" class="form-label">Dalykas</label>
+                <select name="SubjectId" id="SubjectId" class="form-select" required>
+                    @{
+                        var subjects = ViewBag.Subject as IEnumerable<Subject>;
+                        var subjectName = subjects?.FirstOrDefault(sub => sub.SubjectId == @Model.SubjectId);
+
+                        <option value="@subjectName.SubjectId">@subjectName.SubjectName</option>
+                        foreach (var subject in ViewBag.Subject)
+                        {
+                            <option value="@subject.SubjectId">@subject.SubjectName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="LectureTimeId" class="form-label">Paskaitos laikas</label>
+                <select name="LectureTimeId" id="LectureTimeId" class="form-select" required>
+                    @{
+                        var time = ViewBag.LectureTime as IEnumerable<LectureTime>;
+                        var lectureTime = time?.FirstOrDefault(lt => lt.LectureTimeId == @Model.LectureTimeId);
+
+                        <option value="@lectureTime.LectureTimeId">@lectureTime.TimeStart - @lectureTime.TimeEnd</option>
+                        foreach (var lectureTimes in ViewBag.LectureTime)
+                        {
+                            <option value="@lectureTimes.LectureTimeId">@lectureTimes.TimeStart - @lectureTimes.TimeEnd</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="custom-bg-darkblue text-light border-0 rounded mt-3 p-2">Išsaugoti</button>
+    </form>
+</div>

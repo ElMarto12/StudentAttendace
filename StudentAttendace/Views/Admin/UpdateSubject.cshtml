@@ -1,0 +1,38 @@
+﻿@using StudentAttendace.Models.DbModels
+@model StudentAttendace.Models.DbModels.Subject;
+
+@{
+    Layout = "_LayoutAdmin";
+}
+<div class="container-fluid mt-5">
+    <form asp-action="UpdateSubject" asp-controller="Subjects" method="post" class="mt-4">
+        <input hidden name="SubjectId" id="SubjectId" value="@Model.SubjectId"/>
+        <div class="row">
+            <div class="col mb-3">
+                <label for="SubjectName" class="form-label">Dalyko pavadinimas</label>
+                <input name="SubjectName" id="SubjectName" class="form-control" value="@Model.SubjectName" required/>
+            </div>
+            <div class="col mb-3">
+                <label for="LectureNumber" class="form-label">Paskaitų skaičius</label>
+                <input name="LectureNumber" id="LectureNumber" class="form-control" value="@Model.LectureNumber" required/>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="TeacherId" class="form-label">Dėstytojas</label>
+            <select name="TeacherId" id="TeacherId" class="form-select" required>
+                @{
+                    var teachers = ViewBag.Teacher as IEnumerable<Teacher>;
+                    var teacherName = teachers.FirstOrDefault(tn => tn.TeacherID == @Model.TeacherId);
+
+                    <option value="@teacherName?.TeacherID">@teacherName?.Name @teacherName?.LastName</option>
+                    foreach (var teacher in teachers)
+                    {
+                        <option value="@teacher.TeacherID">@teacher.Name @teacher.LastName</option>
+                    }
+
+                }
+            </select>
+        </div>
+        <button type="submit" class="custom-bg-darkblue text-light border-0 rounded mt-3 p-2">Išsaugoti</button>
+    </form>
+</div>

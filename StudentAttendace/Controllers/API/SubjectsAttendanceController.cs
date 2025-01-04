@@ -16,4 +16,24 @@ public class SubjectsAttendanceController(ApplicationDbContext context) : Contro
 
         return subAttendances;
     }
+    
+    [HttpGet]
+    [Route("BySubject/{subjectId}")]
+    public async Task<ActionResult<IEnumerable<SubjectAttendance>>> GetSubjectAttendanceBySubjectId(int subjectId)
+    {
+        var sAttendance = await context.SubjectAttendances
+            .Where(st => st.SubjectId == subjectId).ToListAsync();
+
+        return sAttendance;
+    }
+    
+    [HttpGet]
+    [Route("ByStudent/{id}")]
+    public async Task<ActionResult<IEnumerable<SubjectAttendance>>> GetSubjectAttendancesByStudentId(int id)
+    {
+        var subjectAttendances = await context.SubjectAttendances
+            .Where(sa => sa.StudentId == id).ToListAsync();
+
+        return subjectAttendances;
+    }
 }

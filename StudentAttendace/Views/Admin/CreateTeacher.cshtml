@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid mt-5">
+    <form asp-action="AddNewTeacher" asp-controller="Teachers" method="post" class="mt-4">
+        <input hidden name="UserId" value="0"/>
+        <input hidden name="Role" value="Undefined"/>
+        <div class="row">
+            <div class="col mb-3">
+                <label for="Name" class="form-label">Vardas</label>
+                <input name="Name" id="Name" class="form-control" placeholder="Įveskite vardą" required/>
+            </div>
+            <div class="col mb-3">
+                <label for="LastName" class="form-label">Pavardė</label>
+                <input name="LastName" id="LastName" class="form-control" placeholder="Įveskite pavardę" required/>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="Email" class="form-label">El. paštas</label>
+            <input name="Email" id="Email" type="email" class="form-control" placeholder="Įveskite el. pašto adresą" required/>
+        </div>
+        <div class="mb-3">
+            <label for="Password" class="form-label">Slaptažodis</label>
+            <input name="Password" id="Password" type="password" class="form-control" placeholder="Įveskite slaptažodį" required/>
+        </div>
+        <button type="submit" class="custom-bg-darkblue text-light border-0 rounded mt-3 p-2">Pridėti dėstytoją</button>
+    </form>
+</div>
